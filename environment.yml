@@ -37,10 +37,12 @@ dependencies:
   - liblapack=3.9.0=16_osxarm64_openblas
   - libopenblas=0.3.21=h269037a_0
   - libpng=1.6.37=hb8d0fd4_0
+  - libsqlite=3.39.4=h76d750c_0
   - libtiff=4.4.0=had003b8_0
   - libwebp=1.2.4=h68602c7_0
   - libwebp-base=1.2.4=h1a28f6b_0
   - libxml2=2.9.14=h8c5e841_0
+  - libzlib=1.2.13=h03a7124_4
   - llvm-openmp=14.0.6=hc6e5704_0
   - lz4-c=1.9.3=hc377ac9_0
   - matplotlib=3.5.2=py310hca03da5_0
@@ -52,14 +54,16 @@ dependencies:
   - numexpr=2.8.3=py310h5a06f4b_0
   - numpy=1.23.1=py310h220015d_0
   - numpy-base=1.23.1=py310h742c864_0
-  - openssl=1.1.1q=ha287fd2_0
+  - openssl=3.0.5=h03a7124_2
   - packaging=21.3=pyhd3eb1b0_0
   - pandas=1.4.4=py310hc377ac9_0
   - pillow=9.2.0=py310h4d1bdd5_1
   - pip=22.2.2=py310hca03da5_0
   - pyparsing=3.0.9=py310hca03da5_0
-  - python=3.10.6=hbdb9e5c_0
+  - python=3.10.6=hae75cb6_0_cpython
   - python-dateutil=2.8.2=pyhd3eb1b0_0
+  - python-igraph=0.10.1=py310hb3ce840_1
+  - python_abi=3.10=2_cp310
   - pytz=2022.1=py310hca03da5_0
   - readline=8.1.2=h1a28f6b_1
   - setuptools=63.4.1=py310hca03da5_0
@@ -67,11 +71,12 @@ dependencies:
   - sqlite=3.39.3=h1058600_0
   - suitesparse=5.10.1=h7cd81ec_1
   - tbb=2021.6.0=hffc8910_0
+  - texttable=1.6.4=pyhd8ed1ab_0
   - tk=8.6.12=hb8d0fd4_0
   - tornado=6.2=py310h1a28f6b_0
   - tzdata=2022e=h04d1e81_0
   - wheel=0.37.1=pyhd3eb1b0_0
   - xz=5.2.6=h1a28f6b_0
-  - zlib=1.2.12=h5a0b063_3
+  - zlib=1.2.13=h03a7124_4
   - zstd=1.5.2=h8574219_0
 prefix: /Users/adityamanelkar/Projects/AI/the-circle-of-life-repo/env
