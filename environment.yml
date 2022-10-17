@@ -1,5 +1,6 @@
 name: /Users/adityamanelkar/Projects/AI/the-circle-of-life-repo/env
 channels:
+  - anaconda
   - conda-forge
   - defaults
 dependencies:
@@ -9,8 +10,8 @@ dependencies:
   - brotli=1.0.9=h1a28f6b_7
   - brotli-bin=1.0.9=h1a28f6b_7
   - bzip2=1.0.8=h620ffc9_4
-  - ca-certificates=2022.9.24=h4653dfc_0
-  - certifi=2022.9.24=pyhd8ed1ab_0
+  - ca-certificates=2022.4.26=hca03da5_0
+  - certifi=2022.6.15=py310hca03da5_0
   - cycler=0.11.0=pyhd3eb1b0_0
   - fonttools=4.25.0=pyhd3eb1b0_0
   - freetype=2.11.0=h1192e45_0
@@ -18,7 +19,6 @@ dependencies:
   - glpk=5.0=h6d7a090_0
   - gmp=6.2.1=h9f76cd9_0
   - icu=68.2=hbdafb3b_0
-  - igraph=0.10.1=hcec9b84_3
   - jpeg=9e=h1a28f6b_0
   - kiwisolver=1.4.2=py310hc377ac9_0
   - lcms2=2.12=hba8e193_0
@@ -51,18 +51,20 @@ dependencies:
   - mpfr=4.1.0=h6d7a090_1
   - munkres=1.1.4=py_0
   - ncurses=6.3=h1a28f6b_3
+  - networkx=2.7.1=pyhd3eb1b0_0
+  - nomkl=3.0=0
   - numexpr=2.8.3=py310h5a06f4b_0
   - numpy=1.23.1=py310h220015d_0
   - numpy-base=1.23.1=py310h742c864_0
+  - openblas=0.3.21=hca03da5_0
+  - openblas-devel=0.3.21=hca03da5_0
   - openssl=3.0.5=h03a7124_2
   - packaging=21.3=pyhd3eb1b0_0
   - pandas=1.4.4=py310hc377ac9_0
   - pillow=9.2.0=py310h4d1bdd5_1
-  - pip=22.2.2=py310hca03da5_0
   - pyparsing=3.0.9=py310hca03da5_0
   - python=3.10.6=hae75cb6_0_cpython
   - python-dateutil=2.8.2=pyhd3eb1b0_0
-  - python-igraph=0.10.1=py310hb3ce840_1
   - python_abi=3.10=2_cp310
   - pytz=2022.1=py310hca03da5_0
   - readline=8.1.2=h1a28f6b_1
@@ -79,4 +81,7 @@ dependencies:
   - xz=5.2.6=h1a28f6b_0
   - zlib=1.2.13=h03a7124_4
   - zstd=1.5.2=h8574219_0
+  - pip:
+    - cffi==1.15.1
+    - pycparser==2.21
 prefix: /Users/adityamanelkar/Projects/AI/the-circle-of-life-repo/env
