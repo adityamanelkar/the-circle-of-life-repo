@@ -1,6 +1,6 @@
 # CS 520 THE CIRCLE OF LIFE
 
-# Setup Guide for Anaconda
+## Setup Guide for Anaconda
 
 Following steps need to be performed to replicate the environment I am using on Miniconda:
 
@@ -8,7 +8,7 @@ Run the following on CLI (with miniconda installed) in the repo folder: conda en
 
 Activate the created environment using: conda activate /Path/To/Your/env
 
-# Additional non-python packages
+## Additional non-python packages
 
 I have also installed the following packages:
 
