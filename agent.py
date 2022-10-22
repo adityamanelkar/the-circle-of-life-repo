@@ -51,47 +51,53 @@ class Agent():
         # Setting priority for every neighbor according to the order followed by Agent1 
         priority = {}
 
-        # priority = [None]*len(agent_neighbours)
 
-        for i in range(len(agent_neighbours)):
+        for i in agent_neighbours:
             # dist = []
 
             # Distance of shortest path from neighbor to prey
-            neighbor_to_prey = nx.shortest_path_length(graph,source = agent_neighbours[i], target=prey_pos)
+            neighbor_to_prey = nx.shortest_path_length(graph,source = i, target=prey_pos)
 
             # dist.append(neighbor_to_prey)
 
             # Distance of shortest path from neighbor to predator
-            neighbor_to_predator = nx.shortest_path_length(graph,source = agent_neighbours[i], target=pred_pos)
+            neighbor_to_predator = nx.shortest_path_length(graph,source = i, target=pred_pos)
 
             # dist.append(neighbor_to_predator)
 
 
             if neighbor_to_prey < agent_to_prey and neighbor_to_predator > agent_to_predator:
-                priority[agent_neighbours[i]] = 1
-                # priority[i] = 1
-            elif neighbor_to_prey < agent_to_prey and neighbor_to_predator == agent_to_predator :
-                priority[agent_neighbours[i]] = 2
-                # priority[i] = 2
-            elif neighbor_to_prey == agent_to_prey and neighbor_to_predator > agent_to_predator :
-                priority[agent_neighbours[i]] = 3
-                # priority[i] = 3
-            elif neighbor_to_prey == agent_to_prey and neighbor_to_predator == agent_to_predator :
-                priority[agent_neighbours[i]] = 4
-                # priority[i] = 4 
-            elif neighbor_to_predator > agent_to_predator :
-                priority[agent_neighbours[i]] = 5
-                # priority[i] = 5
-            elif neighbor_to_predator == agent_to_predator :
-                priority[agent_neighbours[i]] = 6
-                # priority[i] = 6
-            else :
-                priority[agent_neighbours[i]] = 7
-                # priority[i] = 7
 
-        #     print("Distance of neighbor {} to prey and predator".format(agent_neighbours[i]))
+                priority[i] = 1
+                
+            elif neighbor_to_prey < agent_to_prey and neighbor_to_predator == agent_to_predator :
+
+                priority[i] = 2
+                
+            elif neighbor_to_prey == agent_to_prey and neighbor_to_predator > agent_to_predator :
+
+                priority[i] = 3
+                
+            elif neighbor_to_prey == agent_to_prey and neighbor_to_predator == agent_to_predator :
+
+                priority[i] = 4
+                
+            elif neighbor_to_predator > agent_to_predator :
+
+                priority[i] = 5
+                
+            elif neighbor_to_predator == agent_to_predator :
+
+                priority[i] = 6
+                
+            else :
+
+                priority[i] = 7
+                
+
+        #     print("Distance of neighbor {} to prey and predator".format(i))
         #     print(dist)
-        #     print("priority of neighbor "+str(agent_neighbours[i]))
+        #     print("priority of neighbor "+str(i))
         #     print(priority[i])
         print("Priority of every neighbour:")
         print(priority)
