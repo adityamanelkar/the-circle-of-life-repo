@@ -15,7 +15,7 @@ class cycle:
         i = self._index
         self._index += k
         if self._index >= len(self._c):
-            self._index = k - i - 2
+            self._index = (self._index%len(self._c))
         return self._c[self._index]
 
     def previous(self, k):
@@ -25,78 +25,79 @@ class cycle:
             self._index = len(self._c) - (k - i)
         return self._c[self._index]
 
-start_time = time.time()
+def create_graph(total_vertices,max_degree, p_forward):
 
-# Create a list
-vertices = [i for i in range(50)]
+    vertices = [i for i in range(total_vertices)]
 
-cyc_point = cycle(vertices)
+    cyc_point = cycle(vertices)
 
-edges = []
+    edges = []
 
-cyc_point.set_index(0)
+    cyc_point.set_index(0)
 
-# Set normal edges
-for i in range(50):
-    edges.append((i, cyc_point.next(1)))
+    # Set normal edges
+    for i in range(50):
+        edges.append((i, cyc_point.next(1)))
 
-cyc_point.set_index(0)
+    cyc_point.set_index(0)
+    # Initialize G as a directed graph
+    G = nx.Graph()
 
-# Set the edges with when dimension < 3
+    # Add initial edges
+    G.add_edges_from(edges)
 
-print(edges)
-
-# Initialize G as a directed graph
-G = nx.Graph()
-
-# Add initial edges
-G.add_edges_from(edges)
-
-# Add more edges
+    cyc_point.set_index(0)
 
 # There needs to be some kind of while here
-can_add = True
-tries = 0
-max_tries = 10 ** 5
-closed_list = []
+    tries = 0
+    max_tries = 1000
 
-while tries < max_tries:
-    tries += 1
+    while tries < max_tries:
+        tries += 1
 
-    print("Try {}".format(tries))
-    node_degrees = {node : val for (node, val) in G.degree()}
+        # print("Try {}".format(tries))
 
-    random_idx = random.randint(0, 49) # pulls a random index
+        random_idx = random.randint(0, 49) # pulls a random index
 
-    if node_degrees[random_idx] > 2 or random_idx in closed_list:
-        if random_idx not in closed_list:
-            closed_list.append(random_idx)
-        continue
-
-    cyc_point.set_index(random_idx)
-
-    if random.random() <= 0.5:
-        positive_idx = cyc_point.next(random.randint(2, 5))
-        if positive_idx not in closed_list:
-            if node_degrees[positive_idx] < 3:
-                G.add_edge(random_idx, positive_idx)
+        if G.degree(random_idx) < max_degree:
+            cyc_point.set_index(random_idx)
+            if random.random() <= p_forward:
+                positive_idx = cyc_point.next(random.randint(2, 5))
+                if G.degree(positive_idx) < max_degree:
+                    G.add_edge(random_idx, positive_idx)
             else:
-                if positive_idx not in closed_list:
-                    closed_list.append(positive_idx)
-    else:
-        negative_idx = cyc_point.previous(random.randint(2, 5))
-        if negative_idx not in closed_list:
-            if node_degrees[negative_idx] < 3:
-                G.add_edge(random_idx, negative_idx)
-            else:
-                if negative_idx not in closed_list:
-                    closed_list.append(negative_idx)
+                negative_idx = cyc_point.previous(random.randint(2, 5))
+                if G.degree(negative_idx) < max_degree:
+                    G.add_edge(random_idx, negative_idx)
 
-print("Number of Edges = {}".format(G.number_of_edges()))
+    print("Maximum no of Edges added :"+str(G.number_of_edges()-50))
+    return G
 
-print("Time it took to create a graph is: {} seconds".format(time.time() - start_time))
 
-pos = nx.nx_agraph.graphviz_layout(G, prog="neato") # k=5/math.sqrt(G.order())
-nx.draw(G, pos=pos, with_labels=True)
+def visualise_graph(graph):  
+    pos = nx.nx_agraph.graphviz_layout(graph, prog="neato") # k=5/math.sqrt(G.order())
+    nx.draw(graph, pos=pos, with_labels=True)
+    plt.show()
 
-plt.show()
+
+
+
+
+
+# edges_f = []
+# degree = []
+
+# for i in range(1000):
+#     start_time = time.time()
+#     if i%100 == 0:
+#         print("Graph: "+str(i))
+#     graph = create_graph(50,3,0.5)
+#     edges_f.append(graph.number_of_edges()-50)
+#     degree.append(max([i[1]for i in graph.degree()]))
+
+# print("maximum no of edges added :"+str(max(edges_f)))
+# print("minimum no of edges added :"+str(min(edges_f)))
+# # print(max(degree))
+# print("Time it took to create {} graphs is: {} seconds".format(1000,(time.time() - start_time)))
+
+
