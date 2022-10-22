@@ -46,24 +46,26 @@ class Agent():
         print("Neighbors of Agent: {}".format(agent_neighbours))
 
         
-        
-
+        #Distance of shortest path from each neighbour to prey and predator
+        dist_neighbors = {}
         # Setting priority for every neighbor according to the order followed by Agent1 
         priority = {}
 
+        
+
 
         for i in agent_neighbours:
-            # dist = []
 
             # Distance of shortest path from neighbor to prey
             neighbor_to_prey = nx.shortest_path_length(graph,source = i, target=prey_pos)
 
-            # dist.append(neighbor_to_prey)
+
 
             # Distance of shortest path from neighbor to predator
             neighbor_to_predator = nx.shortest_path_length(graph,source = i, target=pred_pos)
 
-            # dist.append(neighbor_to_predator)
+
+            dist_neighbors[i] = (neighbor_to_prey,neighbor_to_predator)
 
 
             if neighbor_to_prey < agent_to_prey and neighbor_to_predator > agent_to_predator:
@@ -95,10 +97,9 @@ class Agent():
                 priority[i] = 7
                 
 
-        #     print("Distance of neighbor {} to prey and predator".format(i))
-        #     print(dist)
-        #     print("priority of neighbor "+str(i))
-        #     print(priority[i])
+      
+        print("Distance of every neighbour from prey and predator: ")
+        print(dist_neighbors)
         print("Priority of every neighbour:")
         print(priority)
 
