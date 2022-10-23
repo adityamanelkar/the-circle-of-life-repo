@@ -1,7 +1,6 @@
 import math
 import random
-import networkx as nx
-
+from graph_utils import Graph
 
 # Need to implement some algo for the agent here
 
@@ -22,7 +21,7 @@ class Agent():
         print("Initial Agent Position: "+str(self.node))
 
 
-    def move_1(self, graph, prey_pos, pred_pos) -> None:
+    def move_1(self, graph: Graph, prey_pos, pred_pos) -> None:
         """
         This function moves the agent 1 according to the strategy mentioned in the write up
 
@@ -31,12 +30,12 @@ class Agent():
 
 
         # Shortest Distance from Agent to prey
-        agent_to_prey = nx.shortest_path_length(graph,source = self.node, target = prey_pos)
+        agent_to_prey = graph.shortest_path_length(self.node, prey_pos)
         print ("Distance of Agent to Prey: "+str(agent_to_prey))  
 
 
         # Shortest Distance from Agent to Predator
-        agent_to_predator = nx.shortest_path_length(graph,source = self.node, target = pred_pos)
+        agent_to_predator = graph.shortest_path_length(self.node, pred_pos)
         print ("Distance of Agent to Predator: "+str(agent_to_predator))
 
 
@@ -57,12 +56,12 @@ class Agent():
         for i in agent_neighbours:
 
             # Distance of shortest path from neighbor to prey
-            neighbor_to_prey = nx.shortest_path_length(graph,source = i, target=prey_pos)
+            neighbor_to_prey = graph.shortest_path_length(i, prey_pos)
 
 
 
             # Distance of shortest path from neighbor to predator
-            neighbor_to_predator = nx.shortest_path_length(graph,source = i, target=pred_pos)
+            neighbor_to_predator = graph.shortest_path_length(i, pred_pos)
 
 
             dist_neighbors[i] = (neighbor_to_prey,neighbor_to_predator)
