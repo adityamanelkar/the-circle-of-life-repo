@@ -207,8 +207,7 @@ class Graph:
                             queue.append(neighbor)
 
                         # And finally, since we have touched this neighbor, we want to also add it to the closed list
-                        if neighbor not in closed_list:
-                            closed_list.append(neighbor)
+                        closed_list.append(neighbor)
 
             # End of while
 
