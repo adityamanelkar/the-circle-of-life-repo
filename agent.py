@@ -2,6 +2,7 @@ import math
 import random
 from graph_utils import Graph
 
+
 # Need to implement some algo for the agent here
 
 # Need to also implement some framework for calling the algo
@@ -20,6 +21,7 @@ class Agent():
 
         print("Initial Agent Position: "+str(self.node))
 
+    
 
     def move_1(self, graph: Graph, prey_pos, pred_pos) -> None:
         """
@@ -30,19 +32,33 @@ class Agent():
 
 
         # Shortest Distance from Agent to prey
-        agent_to_prey = graph.shortest_path_length(self.node, prey_pos)
-        print ("Distance of Agent to Prey: "+str(agent_to_prey))  
+
+        # agent_to_prey_path = graph.shortest_path(self.node , prey_pos)
+        # print("Path from Agent to Prey: ")
+        # print(agent_to_prey_path)
+        agent_to_prey = graph.shortest_path_length(self.node , prey_pos)
+        
+
+        # print ("Distance of Agent to Prey: "+str(agent_to_prey))  
+
+        
 
 
         # Shortest Distance from Agent to Predator
-        agent_to_predator = graph.shortest_path_length(self.node, pred_pos)
-        print ("Distance of Agent to Predator: "+str(agent_to_predator))
+
+        # agent_to_predator_path = graph.shortest_path(self.node , pred_pos)
+        # print("Path from Agent to Predator: ")
+        # print(agent_to_predator_path)
+        agent_to_predator = graph.shortest_path_length(self.node , pred_pos)
+
+        # print ("Distance of Agent to Predator: "+str(agent_to_predator))
 
 
         # List of Neighbors of Agent
-        agent_neighbours = list(graph.neighbors(self.node))
-        print()
-        print("Neighbors of Agent: {}".format(agent_neighbours))
+        agent_neighbours = graph.neighbors(self.node)
+
+        # print()
+        # print("Neighbors of Agent: {}".format(agent_neighbours))
 
         
         #Distance of shortest path from each neighbour to prey and predator
@@ -53,54 +69,67 @@ class Agent():
         
 
 
-        for i in agent_neighbours:
+        for neighbor in agent_neighbours:
 
             # Distance of shortest path from neighbor to prey
-            neighbor_to_prey = graph.shortest_path_length(i, prey_pos)
 
+            # neighbor_to_prey_path = graph.shortest_path(neighbor , prey_pos)
+            # print("Path from Neighbor {} to Prey: {}".format(neighbor,neighbor_to_prey_path))
+            neighbor_to_prey = graph.shortest_path_length( neighbor, prey_pos)
+
+            # print("Dist of Neighbor {} to Prey: {} ".format(neighbor,neighbor_to_prey))
+            
 
 
             # Distance of shortest path from neighbor to predator
-            neighbor_to_predator = graph.shortest_path_length(i, pred_pos)
+
+            # neighbor_to_predator_path = graph.shortest_path(neighbor , pred_pos)
+            # print("Path from Neighbor {} to Predator: {}".format(neighbor,neighbor_to_predator_path))
+            neighbor_to_predator = graph.shortest_path_length( neighbor, pred_pos)
+
+            # print("Dist of Neighbor {} to Predator: {} ".format(neighbor,neighbor_to_predator))
+            
+            
 
 
-            dist_neighbors[i] = (neighbor_to_prey,neighbor_to_predator)
+            dist_neighbors[neighbor] = (neighbor_to_prey,neighbor_to_predator)
 
 
             if neighbor_to_prey < agent_to_prey and neighbor_to_predator > agent_to_predator:
 
-                priority[i] = 1
+                priority[neighbor] = 1
                 
             elif neighbor_to_prey < agent_to_prey and neighbor_to_predator == agent_to_predator :
 
-                priority[i] = 2
+                priority[neighbor] = 2
                 
             elif neighbor_to_prey == agent_to_prey and neighbor_to_predator > agent_to_predator :
 
-                priority[i] = 3
+                priority[neighbor] = 3
                 
             elif neighbor_to_prey == agent_to_prey and neighbor_to_predator == agent_to_predator :
 
-                priority[i] = 4
+                priority[neighbor] = 4
                 
             elif neighbor_to_predator > agent_to_predator :
 
-                priority[i] = 5
+                priority[neighbor] = 5
                 
             elif neighbor_to_predator == agent_to_predator :
 
-                priority[i] = 6
+                priority[neighbor] = 6
                 
             else :
 
-                priority[i] = 7
+                priority[neighbor] = 7
                 
 
       
-        print("Distance of every neighbour from prey and predator: ")
-        print(dist_neighbors)
-        print("Priority of every neighbour:")
-        print(priority)
+        # print("Distance of every neighbour from prey and predator: ")
+        # print(dist_neighbors)
+
+        # print("Priority of every neighbour:")
+        # print(priority)
 
         
         
@@ -123,7 +152,8 @@ class Agent():
             self.node = self.node
     
 
-        
+
+
                
 
 
