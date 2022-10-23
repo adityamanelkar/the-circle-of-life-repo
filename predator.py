@@ -4,11 +4,14 @@ from agent import Agent
 
 class Predator:
     
-    def __init__(self, graph: Graph) -> None:
+    def __init__(self, graph: Graph, agent: Agent) -> None:
         """
         Spawn at some node while initializing the predator object
         """
-        self.pos = random.choice(list(graph.graph))
+        possible_pos = list(graph.graph)
+        possible_pos.remove(agent.node) # we don't want to spawn where the agent is at
+
+        self.pos = random.choice(possible_pos)
     
     def move_predator(self, graph: Graph, agent: Agent) -> None:
         """
