@@ -48,7 +48,7 @@ for run in range(num_runs):
 
         # Resetting timeSteps (an upper bound of 1000) which is used to make sure agent isn't avoiding ghosts forever
         timeSteps = 0
-        maxSteps = 1000
+        maxSteps = 100
 
         while not caught_us and not caught_prey and timeSteps < maxSteps:
 
