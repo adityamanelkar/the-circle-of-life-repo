@@ -18,7 +18,7 @@ class Prey:
         Randomly move the prey to one of its neighbors or stay in the same spot
         """
         possible_pos = [self.pos]
-        possible_pos = possible_pos.extend(graph.neighbors(self.pos))
+        possible_pos.extend(graph.neighbors(self.pos))
 
         # Just set the current position with equal random chance
         self.pos = random.choice(possible_pos)
