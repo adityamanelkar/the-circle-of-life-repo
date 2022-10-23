@@ -1,24 +1,27 @@
-from graph_utils import Graph
-import random
-import math
 import time
+import pandas as pd
+from graph_utils import Graph
 import agent
 from predator import Predator
 from prey import Prey
-import statistics
-import pandas as pd
 
 total_vertices = int(input("Enter the total vertices number: "))
 agentNum = int(input("Enter the agent number: "))
 num_runs = int(input("Enter the number of runs: "))
 num_trials = int(input("Enter the number of trials per run: "))
+max_steps = int(input("Enter the max number of steps each trial should run for: "))
 
-
+start_time = time.time()
 
 # Run the agent/prey/predator game (based on input params)
 for run in range(num_runs):
 
+    success = {}
+    fail_predator = {}
+    fail_hang = {}
 
+    for trial in range(num_trials):
+        success[trial] = fail_predator[trial] = fail_hang[trial] = 0
 
     for trial in range(num_trials):
 
@@ -39,17 +42,12 @@ for run in range(num_runs):
         caught_us = False
         caught_prey = False
 
-        success = {}
-        fail_predator = {}
-        fail_hang = {}
+        # Resetting time_steps - an upper bound of max_steps is used to make sure agent isn't running forever
+        time_steps = 0
 
-        # Resetting timeSteps (an upper bound of 1000) which is used to make sure agent isn't avoiding ghosts forever
-        timeSteps = 0
-        maxSteps = 100
+        while not caught_us and not caught_prey and time_steps < max_steps:
 
-        while not caught_us and not caught_prey and timeSteps < maxSteps:
-
-            timeSteps += 1
+            time_steps += 1
 
             # MOVE AGENT
             if a.name == "agent1":
@@ -98,8 +96,7 @@ for run in range(num_runs):
         # End of movement while loop
     
         # Check what was the reason of exiting the while loop and update the counters
-        if not caught_us and not caught_prey  and timeSteps > maxSteps:
-            hang = True
+        if not caught_us and not caught_prey and time_steps > max_steps:
             fail_hang[trial] = 1
 
     # End of trial
@@ -111,11 +108,6 @@ for run in range(num_runs):
     file_name = "./agent_csv/agent" + str(agentNum) + "/Run" + str(run) + '.csv'
     df.to_csv(file_name, encoding='utf-8')
 
-
-
-
-
-
-
 # End of runs
 
+print("The time taken for {} runs ({} trials per run) was: [{}] seconds".format(num_runs, num_trials, round(time.time() - start_time, 2)))
