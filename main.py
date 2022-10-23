@@ -96,7 +96,7 @@ for run in range(num_runs):
         # End of movement while loop
     
         # Check what was the reason of exiting the while loop and update the counters
-        if not caught_us and not caught_prey and time_steps > max_steps:
+        if not caught_us and not caught_prey and time_steps == max_steps:
             fail_hang[trial] = 1
 
     # End of trial
