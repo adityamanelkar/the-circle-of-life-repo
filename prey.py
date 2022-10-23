@@ -1,13 +1,17 @@
 import random
 from graph_utils import Graph
+from agent import Agent
 
 class Prey:
     
-    def __init__(self, graph: Graph) -> None:
+    def __init__(self, graph: Graph, agent: Agent) -> None:
         """
         Spawn at some node while initializing the prey object
         """
-        self.pos = random.choice(list(graph.graph))
+        possible_pos = list(graph.graph)
+        possible_pos.remove(agent.node) # we don't want to spawn where the agent is at
+
+        self.pos = random.choice(possible_pos)
     
     def move_prey(self, graph: Graph) -> None:
         """
