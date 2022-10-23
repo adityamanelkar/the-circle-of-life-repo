@@ -28,6 +28,7 @@ class Predator:
             
             if path_length < shortest_path_length:
                 best_neighbors = [neighbor] # this is done because we have a clear cut best neighbor
+                shortest_path_length = path_length
             
             elif path_length == shortest_path_length:
                 best_neighbors.append(neighbor) # this is done because we have a tie which we need to break randomly
