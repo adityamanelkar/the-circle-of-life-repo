@@ -36,8 +36,8 @@ for run in range(num_runs):
         a = agent.Agent("agent" + str(agentNum))
 
         # Spawn Prey and Predator
-        prey = Prey(G)
-        predator = Predator(G)
+        prey = Prey(G, a)
+        predator = Predator(G, a)
 
         print("Initial Prey Position: "+str(prey.pos))
         print("Initial Predator Position: "+str(predator.pos))
