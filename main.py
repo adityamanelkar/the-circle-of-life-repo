@@ -6,26 +6,19 @@ import agent
 from predator import Predator
 from prey import Prey
 import statistics
+import pandas as pd
 
 total_vertices = int(input("Enter the total vertices number: "))
 agentNum = int(input("Enter the agent number: "))
 num_runs = int(input("Enter the number of runs: "))
 num_trials = int(input("Enter the number of trials per run: "))
 
-total_success_count = 0
-total_failure_1_count = 0
-total_failure_2_count = 0
 
-success_rates = []
-failure_1_rates = []
-failure_2_rates = []
 
 # Run the agent/prey/predator game (based on input params)
 for run in range(num_runs):
 
-    success_count = 0
-    failure_1_count = 0
-    failure_2_count = 0
+
 
     for trial in range(num_trials):
 
@@ -46,6 +39,10 @@ for run in range(num_runs):
         caught_us = False
         caught_prey = False
 
+        success = {}
+        fail_predator = {}
+        fail_hang = {}
+
         # Resetting timeSteps (an upper bound of 1000) which is used to make sure agent isn't avoiding ghosts forever
         timeSteps = 0
         maxSteps = 100
@@ -62,10 +59,12 @@ for run in range(num_runs):
             # CHECK IF CAUGHT OR NOT
             if a.node == predator.pos :
                 caught_us = True
+                fail_predator[trial] = 1
                 break
 
             elif a.node == prey.pos :
                 caught_prey = True
+                success[trial] = 1
                 break           
 
             # MOVE PREY (Randomly)
@@ -74,10 +73,12 @@ for run in range(num_runs):
             # CHECK IF CAUGHT OR NOT
             if a.node == predator.pos :
                 caught_us = True
+                fail_predator[trial] = 1
                 break
 
             elif a.node == prey.pos :
                 caught_prey = True
+                success[trial] = 1
                 break
 
             # MOVE PREDATOR (Shortest path to agent)
@@ -86,48 +87,35 @@ for run in range(num_runs):
             # CHECK IF CAUGHT OR NOT
             if a.node == predator.pos:
                 caught_us = True
+                fail_predator[trial] = 1
                 break
 
             elif a.node == prey.pos:
                 caught_prey = True
+                success[trial] = 1
                 break
         
         # End of movement while loop
     
         # Check what was the reason of exiting the while loop and update the counters
-
-        if caught_prey:
-            success_count += 1
-        
-        elif caught_us:
-            failure_1_count += 1
-        
-        elif timeSteps > maxSteps:
-            failure_2_count += 1
+        if not caught_us and not caught_prey  and timeSteps > maxSteps:
+            hang = True
+            fail_hang[trial] = 1
 
     # End of trial
 
-    success_rate = success_count / num_trials
-    failure_1_rate = failure_1_count / num_trials
-    failure_2_rate = failure_2_count / num_trials
+    df = pd.DataFrame()
+    df["success"]= success.values()
+    df["failure_predator"]= fail_predator.values()
+    df["failure_timeout"]= fail_hang.values()
+    file_name = "./agent_csv/agent" + str(agentNum) + "/Run" + str(run) + '.csv'
+    df.to_csv(file_name, encoding='utf-8')
 
-    print("For run {} we have the following data:\n".format(run))
-    print("Success Rate: [{}] Failure 1 Rate: [{}] Failure 2 Rate: []".format(success_rate, failure_1_rate, failure_2_rate))
 
-    success_rates.append(success_rate)
-    failure_1_rates.append(failure_1_rate)
-    failure_2_rates.append(failure_2_rate)
 
-    total_success_count += success_count
-    total_failure_1_count += failure_1_count
-    total_failure_2_count += failure_2_count
+
+
+
 
 # End of runs
 
-print("Success Rate for all runs is: [{}]".format(total_success_count / (num_runs * num_trials)))
-print("Failure 1 Rate for all runs is: [{}]".format(total_failure_1_count / (num_runs * num_trials)))
-print("Failure 2 Rate for all runs is: [{}]".format(total_failure_2_count / (num_runs * num_trials)))
-
-print("Standard deviation for Success Rates from each of the runs is: [{}]".format(statistics.pstdev(success_rates)))
-print("Standard deviation for Failure 1 Rates from each of the runs is: [{}]".format(statistics.pstdev(failure_1_rates)))
-print("Standard deviation for Failure 2 Rates from each of the runs is: [{}]".format(statistics.pstdev(failure_2_rates)))
