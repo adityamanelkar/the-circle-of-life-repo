@@ -54,6 +54,10 @@ for run in range(num_runs):
                 a.move_1(G, prey.pos, predator.pos)
                 print("Next position of Agent: " + str(a.node))
 
+            elif a.name == "agent2":
+                a.move_2(G, prey.pos, predator.pos)
+                print("Next position of Agent: " + str(a.node))
+
             # CHECK IF CAUGHT OR NOT
             if a.node == predator.pos :
                 caught_us = True
