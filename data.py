@@ -29,7 +29,7 @@ def plotting(l1, l2, l3, num_runs, num_trials, agent_num):
 
     # Just save a PNG for the plot
     plt.gcf().set_size_inches(11.2775330396, 7.04845814978) # The MacbookPro 13.3 inches size
-    plt.savefig("./graphs/agent{}.png".format(agent_num)) # The MacbookPro 13.3 inches dpi
+    plt.savefig("./graphs/agent{}.png".format(agent_num), dpi=227) # The MacbookPro 13.3 inches dpi
     plt.show()
 
 agent_num = int(input("Enter the agent number: "))
