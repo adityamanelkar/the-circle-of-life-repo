@@ -154,6 +154,12 @@ class Graph:
             return self.graph[node]
         else:
             raise ValueError("Node {} not in graph".format(node))
+    
+    def node_list(self) -> list:
+        """
+        Returns a list of all nodes in the graph
+        """
+        return list(self.graph)
 
     def create_path(self, parent_dict, current_node):
         """
