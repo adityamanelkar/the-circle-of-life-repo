@@ -501,7 +501,7 @@ class Agent:
 
         elif self.name == "agent7b" or self.name == "agent8b":
 
-            rand = random.random()
+            rand = random.random() # Aravind mentioned if the drone does cannot pinpoint a prey it cannot even pinpoint the predator (meaning random failure should be uniform for both)
 
             self.prey_beliefs = prob.survey_defective(self.prey_beliefs, best_survey_node, prey_pos, rand)
             if not prob.check_sum_beliefs(self.prey_beliefs):
