@@ -35,9 +35,17 @@ def survey(current_belief: list, node_surveyed: int, target_pos: int) -> list:
 
                 = P ( prey/pred at node ) * P ( survey did not find prey/pred at node_surveyed | prey/pred at node ) / P ( survey did not find prey/pred at node_surveyed )
                     ... Conditional Factoring
-                
+
+                P ( survey did not find prey/pred at node_surveyed | prey/pred at node ) = 1 ; if node_surveyed != actual position of prey/pred(i.e target_pos ); since we know prey/pred was at some other node(i.e. target_pos)than node_surveyed
+                P ( survey did not find prey/pred at node_surveyed | prey/pred at node ) = 0 ; if node_surveyed == actual position of prey/pred(i.e target_pos ); since we know prey/pred was at target_pos which is equal to node_surveyed
+
+                Case 1: if node_surveyed != actual position of prey/pred(i.e target_pos )
                 = P ( prey/pred at node ) * 1 / P ( prey/pred not at node_surveyed )
-                    ... P ( survey did not find prey/pred at node_surveyed | prey/pred at node ) = 1 ; since we know prey/pred was not found at node_surveyed
+                
+                Case 2: if node_surveyed == actual position of prey/pred(i.e target_pos )
+                = P ( prey/pred at node ) * 0 / P ( prey/pred not at node_surveyed )
+                = 0
+
         """
         denominator = (1 - current_belief[node_surveyed])
 
@@ -75,31 +83,38 @@ def survey_defective(current_belief: list, node_surveyed: int, target_pos: int, 
     if not found:
         """
         Formula used:
-            P ( prey/pred at node | survey did not find prey/pred at node_surveyed )
-                = P ( prey/pred at node AND survey did not find prey/pred at node_surveyed ) / P ( survey did not find prey/pred at node_surveyed )
+            P ( prey/pred at node | survey did NOT FIND prey/pred at node_surveyed )
+                = P ( prey/pred at node AND survey did NOT FIND prey/pred at node_surveyed ) / P ( survey did NOT FIND prey/pred at node_surveyed )
                     ... Definition of Conditional Probability
 
-                = P ( prey/pred at node ) * P ( survey did not find prey/pred at node_surveyed | prey/pred at node ) / P ( survey did not find prey/pred at node_surveyed )
+                = P ( prey/pred at node ) * P ( survey did NOT FIND prey/pred at node_surveyed | prey/pred at node ) / P ( survey did NOT FIND prey/pred at node_surveyed )
                     ... Conditional Factoring
                 
-                = P ( prey/pred at node ) * 1 / P ( prey/pred not at node_surveyed )
-                    ... P ( survey did not find prey/pred at node_surveyed | prey/pred at node ) = 1 ; since we know prey/pred was not found at node_surveyed
-                        ... (and the defect does not result in any false positives)
 
             Where - 
-            P ( prey/pred not at node_surveyed ) = P ( prey/pred not found node_surveyed AND prey/pred at node_surveyed ) + P ( prey/pred not found node_surveyed AND prey/pred not at node_surveyed )
-                = P ( prey/pred at node_surveyed ) * P ( prey/pred not found at node_surveyed | prey/pred at node_surveyed ) + P ( prey/pred not found at node_surveyed )
+            P ( prey/pred NOT at node_surveyed ) = P ( prey/pred NOT FOUND at node_surveyed AND prey/pred at node_surveyed ) + P ( prey/pred NOT FOUND at node_surveyed AND prey/pred NOT at node_surveyed )
+                = P ( prey/pred at node_surveyed ) * P ( survey did NOT FIND prey/pred at node_surveyed | prey/pred at node_surveyed ) + P ( prey/pred NOT at node_surveyed )* P ( survey did NOT FIND prey/pred NOT at node_surveyed | prey/pred NOT at node_surveyed)
                     ... Conditional Factoring / Simplification of last probability
+            
+                P ( survey did NOT FIND prey/pred NOT at node_surveyed | prey/pred NOT at node_surveyed)  = 1 ;since we know prey/pred was not found at node_surveyed AND it was NOT at node_surveyed
+                        ... (and the defect does not result in any false positives)
 
-                = P ( prey/pred at node_surveyed ) * 0.1 + ( 1 - P ( prey/pred found at node_surveyed ) )
+                = P ( prey/pred at node_surveyed ) * P ( survey did NOT FIND prey/pred at node_surveyed | prey/pred at node_surveyed ) + P ( prey/pred NOT at node_surveyed )* 1
+
+                = P ( prey/pred at node_surveyed ) * 0.1 + ( 1 - P ( prey/pred at node_surveyed ) )
+
+                =  1 - 0.9 * P ( prey/pred at node_surveyed ) )
                     ... Values known to us
         """
-        denominator = current_belief[node_surveyed] * 0.1 + (1 - current_belief[node_surveyed])
+
+
+        denominator = 1 - current_belief[node_surveyed] * 0.9 
+
 
         # Update probabilities
         for node in range(len(current_belief)):  
             if node == node_surveyed:
-                # set probability of surveyed node P ( prey/pred at node_surveyed ) * P ( prey/pred not found at node_surveyed | prey/pred at node_surveyed ) / denominator
+                # set probability of surveyed node P ( prey/pred at node_surveyed ) * P ( survey did not find prey/pred at node_surveyed | prey/pred at node ) / denominator
                 # since prey/pred is not found there
                 current_belief[node_surveyed] = current_belief[node_surveyed] * 0.1 / denominator
             else:
