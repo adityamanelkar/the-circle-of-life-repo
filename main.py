@@ -18,6 +18,8 @@ max_steps = int(input("Enter the max number of steps each trial should run for: 
 
 start_time = time.time()
 
+total_success = 0
+
 # Run the agent/prey/predator game (based on input params)
 for run in range(num_runs):
 
@@ -69,9 +71,9 @@ for run in range(num_runs):
 
 
             elif a.name == "agent2":
+                a.move_2(G, prey.pos, predator.pos, distracted=False)
                 times_pred_known[trial] += 1
                 times_prey_known[trial] += 1
-                a.move_2(G, prey.pos, predator.pos)
                 print("Next position of Agent: " + str(a.node))
 
             elif a.name == "agent3":
@@ -130,6 +132,14 @@ for run in range(num_runs):
                     times_pred_known[trial] += 1
                 print("Next position of Agent: " + str(a.node))
 
+            elif a.name == "agent9":
+                (prey_known, pred_known) = a.move_9(G, prey.pos, predator.pos, time_steps[trial])
+                if prey_known:
+                    times_prey_known[trial] += 1
+                if pred_known:
+                    times_pred_known[trial] += 1
+                print("Next position of Agent: " + str(a.node))
+
             # CHECK IF CAUGHT OR NOT
             if a.node == predator.pos :
                 caught_us = True
@@ -156,7 +166,10 @@ for run in range(num_runs):
                 break
 
             # MOVE PREDATOR (Shortest path to agent)
-            predator.move_predator(G, a)
+            if a.name in ["agent1", "agent2", "agent3", "agent4"]:
+                predator.move_predator(G, a)
+            else:
+                predator.move_distracted_predator(G, a)
 
             # CHECK IF CAUGHT OR NOT
             if a.node == predator.pos:
@@ -184,6 +197,8 @@ for run in range(num_runs):
     file_name = "./agent_csv/agent" + str(agentNum) + agentChar + "/Run" + str(run) + '.csv'
     df.to_csv(file_name, encoding='utf-8')
 
+    total_success += sum(list(success.values()))
+
     df_2 = pd.DataFrame()
     df_2["times_prey_known"] = times_prey_known.values()
     df_2["times_pred_known"] = times_pred_known.values()
@@ -192,5 +207,7 @@ for run in range(num_runs):
     df_2.to_csv(file_name_2, encoding='utf-8')
 
 # End of runs
+
+print("The total success percentage for the run was: [{}%]".format((total_success * 100) / (num_runs * num_trials)))
 
 print("The time taken for {} runs ({} trials per run) was: [{}] seconds".format(num_runs, num_trials, round(time.time() - start_time, 2)))
