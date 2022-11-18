@@ -706,7 +706,7 @@ class Agent:
 
         # Survey the node in the way to prey to find predator
         if self.name == "agent9":
-            best_survey_node = prob.node_to_survey_cheating(graph, self.node, self.prey_beliefs, self.pred_beliefs, "predator")
+            best_survey_node = prob.node_to_survey_proximity9(graph, self.node, self.prey_beliefs, self.pred_beliefs, "predator")
 
         # Perform survey on the best node.
         # But while doing this, we will check the node for both prey and predator, and will update the beliefs of both.
@@ -788,4 +788,132 @@ class Agent:
             pred_found = True
 
         return (prey_found, pred_found)
-   
+
+    def move_10(self, graph: Graph, prey_pos: int, pred_pos: int, time_steps: int) -> tuple:
+        """
+        Movement logic for Agents 7 and 8
+        """
+        error = 10 ** -5
+        if time_steps == 1:
+            self.pred_beliefs[pred_pos] = 1.0
+            if not prob.check_sum_beliefs(self.pred_beliefs):
+                raise ValueError("Sum of pred beliefs error (initial)")
+            
+            # Initial transition matrix for prey (not to be altered)
+            self.update_prey_trans_matrix(graph)
+        
+        elif time_steps > 1:
+            # Update beliefs post predator move
+            self.update_dist_pred_trans_matrix(graph)
+            """
+            P ( prey/pred at some_node now ) = SUM [ P ( prey/pred at some_node now AND prey/pred was at old_node then ) ]
+                ... Marginalization
+
+            P ( prey/pred at some_node now ) = SUM [ P ( prey/pred at old_node then ) * P ( prey/pred at some_node now | prey/pred at old_node then ) ]
+                ... Conditional Factoring
+
+            P ( prey/pred at some_node now ) = SUM [ P ( prey/pred at old_node then ) * P ( some_node | old_node ) ]
+                ... Simplifying the last probability which is basically the transition probability
+
+            New beilief = DOT PRODUCT [ old_belief , row in the transition matrix ]
+                ... In terms of what we have
+            """
+            updated_beliefs_ndarray_prey = np.matmul(self.prey_transition_matrix, np.array(self.prey_beliefs))
+            self.prey_beliefs = updated_beliefs_ndarray_prey.tolist()
+
+            if not prob.check_sum_beliefs(self.prey_beliefs):
+                raise ValueError("Sum of prey beliefs error (after prey move update)")
+                
+            updated_beliefs_ndarray_pred = np.matmul(self.pred_transition_matrix, np.array(self.pred_beliefs))
+            self.pred_beliefs = updated_beliefs_ndarray_pred.tolist()
+            if not prob.check_sum_beliefs(self.pred_beliefs):
+                raise ValueError("Sum of pred beliefs error (after predator move update)")
+
+        if max(self.pred_beliefs) < 1 + error :
+            # Survey the predator
+            if self.name in ["agent10"]:
+
+                to_survey,best_survey_node = prob.node_to_survey_proximity2(graph, self.node, self.pred_beliefs)
+                # Perform survey on the best node.
+                # # But while doing this, we will check the node for both prey and predator, and will update the beliefs of both
+                if to_survey:
+                    # Perform survey on the best node.
+                    # But while doing this, we will check the node for both prey and predator, and will update the beliefs of both.
+                    self.prey_beliefs = prob.survey(self.prey_beliefs, best_survey_node, prey_pos)
+                    if not prob.check_sum_beliefs(self.prey_beliefs):
+                        raise ValueError("Sum of prey beliefs error (after node survey)")
+                    
+                    self.pred_beliefs = prob.survey(self.pred_beliefs, best_survey_node, pred_pos)
+                    if not prob.check_sum_beliefs(self.pred_beliefs):
+                        raise ValueError("Sum of pred beliefs error (after node survey)")
+                    
+                    prey_found = False
+                    if 1.0 - error <= max(self.prey_beliefs) <= 1.0 + error:
+                        prey_found = True
+                    
+                    pred_found = False
+                    
+                    if 1.0 - error <= max(self.pred_beliefs) <= 1.0 + error:
+                        pred_found = True
+                    
+                    return (prey_found, pred_found)
+                    
+                else:
+
+                    prob_pred_pos = best_survey_node
+                    # Find the node for which we have highest beliefs for prey
+                    max_prob_nodes_prey = [node for node, belief in enumerate(self.prey_beliefs) if belief == max(self.prey_beliefs)]
+                    prob_prey_pos = random.choice(max_prob_nodes_prey)
+                    self.move_2(graph, prob_prey_pos, prob_pred_pos)
+                    
+                    # Update beliefs post agent move (for both prey and predator)
+                    prob.survey(self.prey_beliefs, self.node, prey_pos)
+                    if not prob.check_sum_beliefs(self.prey_beliefs):
+                        raise ValueError("Sum of prey beliefs error (after agent move)")
+                    
+                    prob.survey(self.pred_beliefs, self.node, pred_pos)
+                    if not prob.check_sum_beliefs(self.pred_beliefs):
+                        raise ValueError("Sum of pred beliefs error (after agent move)")
+                    
+                    prey_found = False
+                    if 1.0 - error <= max(self.prey_beliefs) <= 1.0 + error:
+                        prey_found = True
+                    
+                    pred_found = False
+                    
+                    if 1.0 - error <= max(self.pred_beliefs) <= 1.0 + error:
+                        pred_found = True
+                    
+                    return (prey_found, pred_found)
+            
+        else:
+                
+            max_prob_nodes_pred = [node for node, belief in enumerate(self.pred_beliefs) if belief == max(self.pred_beliefs)]
+            
+            prob_pred_pos = random.choice(max_prob_nodes_pred)
+            # Find the node for which we have highest beliefs for prey
+            max_prob_nodes_prey = [node for node, belief in enumerate(self.prey_beliefs) if belief == max(self.prey_beliefs)]
+            
+            prob_prey_pos = random.choice(max_prob_nodes_prey)
+            
+            self.move_2(graph, prob_prey_pos, prob_pred_pos)
+            # Update beliefs post agent move (for both prey and predator)
+            prob.survey(self.prey_beliefs, self.node, prey_pos)
+            if not prob.check_sum_beliefs(self.prey_beliefs):
+                raise ValueError("Sum of prey beliefs error (after agent move)")
+            
+            prob.survey(self.pred_beliefs, self.node, pred_pos)
+            if not prob.check_sum_beliefs(self.pred_beliefs):
+                raise ValueError("Sum of pred beliefs error (after agent move)")
+                
+            prey_found = False
+            
+            if 1.0 - error <= max(self.prey_beliefs) <= 1.0 + error:
+                prey_found = True
+                
+            pred_found = False
+            
+            if 1.0 - error <= max(self.pred_beliefs) <= 1.0 + error:
+                pred_found = True
+                
+            return (prey_found, pred_found)

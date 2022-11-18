@@ -101,39 +101,131 @@ def node_to_survey_proximity(graph: Graph, agent_pos, current_belief: list, targ
     else:
         raise ValueError("The target for survey needs to be either prey or predator and not {}".format(target))
 
-def node_to_survey_cheating(graph: Graph, agent_pos, prey_belief: list, pred_belief: list, target: str) -> int:
+def node_to_survey_proximity2(graph: Graph, agent_pos, current_belief: list) -> int:
+    """
+    Returns best+proximity node to survey for partial prey/pred
+    """
+    l1_neighbors = graph.neighbors(agent_pos)
+
+    l1_neighbors = list(set(l1_neighbors))
+
+    print(l1_neighbors)
+
+    l2_neighbors = []
+
+    for neighbor in l1_neighbors:
+        for l2_neighbor in graph.neighbors(neighbor):
+            l2_neighbors.append(l2_neighbor)
+
+    l2_neighbors = list(set(l2_neighbors))
+
+    l1_neighbors.extend(l2_neighbors)
+
+    region = list(set(l1_neighbors)) # remove all duplicates
+
+    print("Region")
+    print(region)
+
+    beliefs = {}
+
+    for node in region:
+        beliefs[node] = current_belief[node]
+
+    max_prob_in_region = max(list(beliefs.values()))
+
+    print("max_prob_in_region")
+    print(max_prob_in_region)
+
+    high_prob_nodes = [node for node, prob in beliefs.items() if prob == max_prob_in_region]
+    sp_len = math.inf
+    nodes_to_survey = []
+
+    for node in high_prob_nodes:
+        node_len = graph.shortest_path_length(node, agent_pos)
+
+        if node_len < sp_len:
+            sp_len = node_len
+            nodes_to_survey = [node]
+        elif node_len == sp_len:
+            nodes_to_survey.append(node)
+    
+    print("nodes_to_survey")
+    print(nodes_to_survey)
+
+    cutoff = 0.0
+
+    for node in nodes_to_survey:
+        if node in l2_neighbors:
+            cutoff = 0.5
+        else:
+            cutoff = 0.02
+
+    to_survey = True
+
+    if max_prob_in_region > 0 and max_prob_in_region < cutoff:
+        # List of nodes with the highest probability of prey/predator
+        to_survey = True
+
+    elif max_prob_in_region >= cutoff:
+        to_survey = False
+        # List of nodes with the highest probability of prey/predator in region
+    
+    print("to_survey")
+    print(to_survey)
+
+    return (to_survey, random.choice(nodes_to_survey))
+
+def node_to_survey_proximity9(graph: Graph, agent_pos, prey_belief: list, pred_belief: list, target: str) -> int:
     """
     Returns a cheat node to survey to almost always guarantee a success
     """
+    """
+    Returns best+proximity node to survey for partial prey/pred
+    """
     if target == "predator":
-        # We want to simulate and see which position we would want to jump to given we are trying to catch a prey
-        max_prob_nodes_prey = [node for node, belief in enumerate(prey_belief) if belief == max(prey_belief)]
+        l1_neighbors = graph.neighbors(agent_pos)
+
+        l1_neighbors = list(set(l1_neighbors))
+
+        l2_neighbors = []
+        for node in l1_neighbors:
+            for neighbor in graph.neighbors(node):
+                l2_neighbors.append(neighbor)
+
+        l1_neighbors.extend(l2_neighbors)
+
+        region = list(set(l1_neighbors)) # remove all duplicates
+
+        beliefs = {}
+
+        for node in region:
+            beliefs[node] = pred_belief[node]
+
+        max_prob_in_region = max(list(beliefs.values()))
+
+        # List of nodes with the highest probability of prey/predator
+        if max_prob_in_region > 0:
+            high_prob_nodes = [node for node, prob in beliefs.items() if prob == max_prob_in_region]
+            print("In nodes_to_survey_proximity")
+            print(high_prob_nodes)
+
+        else:
+            high_prob_nodes = [node for node in range(len(pred_belief)) if pred_belief[node] == max(pred_belief)]
+
         sp_len = math.inf
-        prey_choices = []
+        nodes_to_survey = []
 
-        for prey_node in max_prob_nodes_prey:
-            cp_len = graph.shortest_path_length(agent_pos, prey_node)
-            if cp_len < sp_len:
-                sp_len = cp_len
-                prey_choices = [prey_node]
-            elif cp_len == sp_len:
-                prey_choices.append(prey_node)
+        for node in high_prob_nodes:
 
-        prey_pos = random.choice(prey_choices)
+            node_len = graph.shortest_path_length(node, agent_pos)            
 
-        node_to_survey = 0
+            if node_len < sp_len:
+                sp_len = node_len
+                nodes_to_survey = [node]
+            elif node_len == sp_len:
+                nodes_to_survey.append(node)
 
-        agent_neighbors = set(graph.neighbors(agent_pos))
-        agent_neighbors.add(agent_pos)
-        print(agent_neighbors)
-
-        path_to_prey = graph.shortest_path(agent_pos, prey_pos)
-        path_to_prey = set(path_to_prey)
-        print(path_to_prey)
-
-        node_to_survey = list(agent_neighbors.intersection(path_to_prey))[0]
-
-        return node_to_survey
+        return random.choice(nodes_to_survey)
 
     elif target == "prey":
         # List of nodes with the highest probability of prey/predator

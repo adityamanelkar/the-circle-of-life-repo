@@ -140,6 +140,14 @@ for run in range(num_runs):
                     times_pred_known[trial] += 1
                 print("Next position of Agent: " + str(a.node))
 
+            elif a.name == "agent10":
+                (prey_known, pred_known) = a.move_10(G, prey.pos, predator.pos, time_steps[trial])
+                if prey_known:
+                    times_prey_known[trial] += 1
+                if pred_known:
+                    times_pred_known[trial] += 1
+                print("Next position of Agent: " + str(a.node))
+
             # CHECK IF CAUGHT OR NOT
             if a.node == predator.pos :
                 caught_us = True
