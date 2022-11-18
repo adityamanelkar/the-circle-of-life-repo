@@ -1,6 +1,5 @@
 import math
 import random
-import numpy as np
 from graph_utils import Graph
 
 def node_to_survey(current_belief: list, target: str) -> int:
@@ -25,26 +24,26 @@ def node_to_survey_closest(graph: Graph, agent_pos, current_belief: list, target
         high_prob_nodes = [node for node in range(len(current_belief)) if current_belief[node] == max(current_belief)]
 
         sp_len = math.inf
-        node_to_survey = 0
-
-        for node in high_prob_nodes:
-
-            node_len = graph.shortest_path_length(node, agent_pos)            
-
-            if graph.shortest_path_length(node, agent_pos) < sp_len:
-                sp_len = node_len
-                node_to_survey = node
-
-        return node_to_survey
+        nodes_to_survey = []
 
     elif target == "prey":
         # List of nodes with the highest probability of prey/predator
         high_prob_nodes = [node for node in range(len(current_belief)) if current_belief[node] == max(current_belief)]
 
-        return random.choice(high_prob_nodes)
-
     else:
         raise ValueError("The target for survey needs to be either prey or predator and not {}".format(target))
+
+    for node in high_prob_nodes:
+
+        node_len = graph.shortest_path_length(node, agent_pos)            
+
+        if node_len < sp_len:
+            sp_len = node_len
+            nodes_to_survey = [node]
+        elif node_len == sp_len:
+            nodes_to_survey.append(node)
+
+    return random.choice(nodes_to_survey)
 
 def node_to_survey_proximity(graph: Graph, agent_pos, current_belief: list, target: str) -> int:
     """
@@ -239,9 +238,7 @@ def survey_defective(current_belief: list, node_surveyed: int, target_pos: int, 
                     ... Values known to us
         """
 
-
         denominator = 1 - current_belief[node_surveyed] * 0.9 
-
 
         # Update probabilities
         for node in range(len(current_belief)):  

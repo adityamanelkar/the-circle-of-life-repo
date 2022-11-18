@@ -562,10 +562,10 @@ class Agent:
                 raise ValueError("Sum of pred beliefs error (after predator move update)")
 
         # Find the best survey pos.
-        # From what Aravind said in OH, we need to see if max belief for any node for predator is greater than or equal to 0.5.
-        # If max pred belief < 0.5 we will always survey predator, else we will survey prey.
+        # From what Dr. Cowan said in class, we need to see if max belief for any node for predator is less than 1.
+        # If max pred belief < 1 we will always survey predator, else we will survey prey.
 
-        if max(self.pred_beliefs) < 1 - error:
+        if max(self.pred_beliefs) < 1:
             # Survey the predator
             if self.name in ["agent7", "agent7b"]:
                 best_survey_node = prob.node_to_survey_closest(graph, self.node, self.pred_beliefs, "predator")
@@ -573,7 +573,7 @@ class Agent:
                 best_survey_node = prob.node_to_survey_proximity(graph, self.node, self.pred_beliefs, "predator")
         else:
             # Survey the prey
-            best_survey_node = prob.node_to_survey(self.prey_beliefs, "prey")
+            best_survey_node = prob.node_to_survey_closest(graph, self.node, self.pred_beliefs, "prey")
 
         # Perform survey on the best node.
         # But while doing this, we will check the node for both prey and predator, and will update the beliefs of both.
@@ -701,8 +701,8 @@ class Agent:
                 raise ValueError("Sum of pred beliefs error (after predator move update)")
 
         # Find the best survey pos.
-        # From what Aravind said in OH, we need to see if max belief for any node for predator is greater than or equal to 0.5.
-        # If max pred belief < 0.5 we will always survey predator, else we will survey prey.
+        # From what Dr. Cowan said in class, we need to see if max belief for any node for predator is less than 1.
+        # If max pred belief < 1 we will always survey predator, else we will survey prey.
 
         # Survey the node in the way to prey to find predator
         if self.name == "agent9":
